@@ -5,7 +5,13 @@ RUN mvn dependency:go-offline -B
 COPY src ./src
 RUN mvn clean compile exec:java
 
-FROM nginx:1.25-alpine
-COPY --from=builder /app/output /usr/share/nginx/html
-EXPOSE 80
-CMD ["nginx", "-g", "daemon off;"]
+
+FROM eclipse-temurin:17-jdk-alpine
+COPY --from=builder /app/target/*.jar app.jar
+EXPOSE 8080
+CMD ["java", "-jar", "app.jar"]
+
+# FROM nginx:1.25-alpine
+# COPY --from=builder /app/output /usr/share/nginx/html
+# EXPOSE 80
+# CMD ["nginx", "-g", "daemon off;"]
